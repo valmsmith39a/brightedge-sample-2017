@@ -3,31 +3,29 @@
 main();
 
 let starWarsDataG;
-let tableRowContainerG;
 
 function main () {
-  document.addEventListener("DOMContentLoaded", function() {
-     tableRowContainerG = document.getElementById("table-body");
-     console.log("first table Row container g is ", tableRowContainerG);
+  document.addEventListener("DOMContentLoaded", () => {
+    const tableRowContainer = document.getElementById("table-body");
 
-    document.getElementById("new-row-btn").addEventListener("click", function() {
-      getStarWarsData(tableRowContainerG);
+    document.getElementById("new-row-btn").addEventListener("click", () => {
+      getStarWarsData(tableRowContainer);
     });
 
-    document.getElementById("name-header").addEventListener("click", function() {
-      const rows = document.getElementsByClassName("row-body");
-      sortNames(rows);
-      deleteRows();
-      createNameHeightTable(starWarsDataG, tableRowContainerG)
+    document.getElementById("name-header").addEventListener("click", () => {
+      const sortedStarWarsData = sortNames(starWarsDataG);
+      deleteRows(tableRowContainer);
+      createNameHeightTable(sortedStarWarsData, tableRowContainer);
     });
   });
 }
 
-const sortNames = (dataRowsNodeList) => {
-  const dataRowsArr = Array.from(dataRowsNodeList);
-  let dataRowsArrSorted = dataRowsArr.sort((a,b) => {
-    const nameA = a.firstChild.innerText.toLowerCase();
-    const nameB = b.firstChild.innerText.toLowerCase();
+const sortNames = (starWarsData) => {
+  // To avoid mutating initial array
+  const starWarsDataCopy = starWarsData.slice(0);
+  const sortedStarWarsData = starWarsDataCopy.sort((a, b) => {
+    const nameA = a.name.toLowerCase();
+    const nameB = b.name.toLowerCase();
     if (nameA < nameB) {
       return -1;
     } else if (nameA > nameB) {
@@ -35,12 +33,10 @@ const sortNames = (dataRowsNodeList) => {
     }
     return 0;
   });
-  return dataRowsArrSorted;
-}
+  return sortedStarWarsData;
+};
 
-const createNameHeightTable = () => {
-  const starWarsDataArr = starWarsDataG.results;
-
+const createNameHeightTable = (starWarsDataArr, tableRowContainer) => {
   for (let i = 0; i < starWarsDataArr.length; i++) {
     let tableRow = document.createElement("TR");
     tableRow.setAttribute("class", "row-body");
@@ -57,15 +53,15 @@ const createNameHeightTable = () => {
 
     tableCellHeight.appendChild(tableDataHeight);
     tableRow.appendChild(tableCellHeight);
-    tableRowContainerG.appendChild(tableRow);
+    tableRowContainer.appendChild(tableRow);
   }
-}
+};
 
-const deleteRows = () => {
-  while(tableRowContainerG.rows.length > 0) {
-    tableRowContainerG.deleteRow(0);
+const deleteRows = (tableRowContainer) => {
+  while(tableRowContainer.rows.length > 0) {
+    tableRowContainer.deleteRow(0);
   }
-}
+};
 
 const getStarWarsData = (tableRowContainer) => {
   const starWarsDataURL = "http://swapi.co/api/people/";
@@ -74,17 +70,18 @@ const getStarWarsData = (tableRowContainer) => {
   xmlhttp.onreadystatechange = function() {
       if (xmlhttp.readyState == XMLHttpRequest.DONE) {
          if (xmlhttp.status == 200) {
-           starWarsDataG = JSON.parse(xmlhttp.responseText);
-           createNameHeightTable(starWarsDataG, tableRowContainerG);
+           const completeStarWarsData = JSON.parse(xmlhttp.responseText);
+           starWarsDataG = completeStarWarsData.results;
+           createNameHeightTable(starWarsDataG, tableRowContainer);
          }
          else if (xmlhttp.status == 400) {
-            alert('There was an error 400');
+          alert('There was an error 400');
          }
          else {
-             alert('something else other than 200 was returned');
+          alert('something else other than 200 was returned');
          }
       }
   };
   xmlhttp.open("GET", starWarsDataURL, true);
   xmlhttp.send();
-}
+};

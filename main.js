@@ -2,17 +2,23 @@
 
 main();
 
+let starWarsDataG;
+let tableRowContainerG;
+
 function main () {
   document.addEventListener("DOMContentLoaded", function() {
-     let tableRowContainer = document.getElementById("table-container");
+     tableRowContainerG = document.getElementById("table-body");
+     console.log("first table Row container g is ", tableRowContainerG);
 
     document.getElementById("new-row-btn").addEventListener("click", function() {
-      getStarWarsData(tableRowContainer);
+      getStarWarsData(tableRowContainerG);
     });
 
     document.getElementById("name-header").addEventListener("click", function() {
       const rows = document.getElementsByClassName("row-body");
       sortNames(rows);
+      deleteRows();
+      createNameHeightTable(starWarsDataG, tableRowContainerG)
     });
   });
 }
@@ -32,8 +38,8 @@ const sortNames = (dataRowsNodeList) => {
   return dataRowsArrSorted;
 }
 
-const createNameHeightTable = (starWarsData, tableRowContainer) => {
-  const starWarsDataArr = starWarsData.results;
+const createNameHeightTable = () => {
+  const starWarsDataArr = starWarsDataG.results;
 
   for (let i = 0; i < starWarsDataArr.length; i++) {
     let tableRow = document.createElement("TR");
@@ -51,7 +57,13 @@ const createNameHeightTable = (starWarsData, tableRowContainer) => {
 
     tableCellHeight.appendChild(tableDataHeight);
     tableRow.appendChild(tableCellHeight);
-    tableRowContainer.appendChild(tableRow);
+    tableRowContainerG.appendChild(tableRow);
+  }
+}
+
+const deleteRows = () => {
+  while(tableRowContainerG.rows.length > 0) {
+    tableRowContainerG.deleteRow(0);
   }
 }
 
@@ -62,8 +74,8 @@ const getStarWarsData = (tableRowContainer) => {
   xmlhttp.onreadystatechange = function() {
       if (xmlhttp.readyState == XMLHttpRequest.DONE) {
          if (xmlhttp.status == 200) {
-           const starWarsData = JSON.parse(xmlhttp.responseText);
-           createNameHeightTable(starWarsData, tableRowContainer);
+           starWarsDataG = JSON.parse(xmlhttp.responseText);
+           createNameHeightTable(starWarsDataG, tableRowContainerG);
          }
          else if (xmlhttp.status == 400) {
             alert('There was an error 400');

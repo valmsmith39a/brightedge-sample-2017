@@ -95,7 +95,11 @@ const createPagination = (starWarsData) => {
   });
 
   pagination.appendChild(previous);
+  renderPaginationPageNumbers(pagination, numberOfPages)
+  pagination.appendChild(next);
+};
 
+const renderPaginationPageNumbers = (pagination, numberOfPages) => {
   for (let i = 0; i < numberOfPages; i++) {
     let page = document.createElement("a");
     page.setAttribute("class", "pagination-nav page")
@@ -105,7 +109,6 @@ const createPagination = (starWarsData) => {
     });
     pagination.appendChild(page);
   }
-  pagination.appendChild(next);
 };
 
 const getItemsDisplayPerPage = (starWarsData, currentPage) => {

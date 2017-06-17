@@ -120,7 +120,7 @@ const getItemsDisplayPerPage = (starWarsData, currentPage) => {
 };
 
 const getStarWarsData = (tableRowContainer) => {
-  const starWarsDataURL = "http://swapi.co/api/people/";
+  const starWarsDataURL = "https://swapi.co/api/people/";
   let xmlhttp = new XMLHttpRequest();
 
   xmlhttp.onreadystatechange = function() {

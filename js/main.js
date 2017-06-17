@@ -11,16 +11,16 @@ let starWarsDataG;
 
     document.getElementById("name-header").addEventListener("click", () => {
       const sortedStarWarsData = sortNames(starWarsDataG);
+      const CURRENT_PAGE = 1;
+      const itemsPerPageToDisplay = getItemsDisplayPerPage(sortedStarWarsData, CURRENT_PAGE);
       deleteRows(tableRowContainer);
-      createNameHeightTable(sortedStarWarsData, tableRowContainer);
+      createNameHeightTable(itemsPerPageToDisplay, tableRowContainer);
     });
   });
 })();
 
 const sortNames = (starWarsData) => {
-  // To avoid mutating initial array
-  const starWarsDataCopy = starWarsData.slice(0);
-  const sortedStarWarsData = starWarsDataCopy.sort((a, b) => {
+  const sortedStarWarsData = starWarsData.sort((a, b) => {
     const nameA = a.name.toLowerCase();
     const nameB = b.name.toLowerCase();
     if (nameA < nameB) {
@@ -76,7 +76,7 @@ const createPagination = (starWarsData) => {
       return;
     }
     currentPage--;
-    const itemsPerPageToDisplay = getItemsDisplayPerPage(starWarsData, currentPage);
+    const itemsPerPageToDisplay = getItemsDisplayPerPage(starWarsDataG, currentPage);
     deleteRows(tableRowContainer);
     createNameHeightTable(itemsPerPageToDisplay, tableRowContainer);
   });
@@ -89,7 +89,7 @@ const createPagination = (starWarsData) => {
       return;
     }
     currentPage++;
-    const itemsPerPageToDisplay = getItemsDisplayPerPage(starWarsData, currentPage);
+    const itemsPerPageToDisplay = getItemsDisplayPerPage(starWarsDataG, currentPage);
     deleteRows(tableRowContainer);
     createNameHeightTable(itemsPerPageToDisplay, tableRowContainer);
   });

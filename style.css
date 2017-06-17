@@ -1,3 +1,7 @@
-#table-header {
-  color: green;
+.pagination-nav {
+  margin: 0 3px 0 3px;
+}
+
+#name-header, #height-header  {
+  color: #687175;
 }

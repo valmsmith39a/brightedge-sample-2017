@@ -21,6 +21,7 @@ let starWarsDataG;
 
     // Sort button
     document.getElementById("sort-btn").addEventListener("click", () => {
+      console.log("data from sort is: ", readDataFromLocalStorage());
       const sortedStarWarsData = sortNames(starWarsDataG);
       const CURRENT_PAGE = 1;
       const itemsPerPageToDisplay = getItemsDisplayPerPage(sortedStarWarsData, CURRENT_PAGE);
@@ -130,6 +131,15 @@ const getItemsDisplayPerPage = (starWarsData, currentPage) => {
   return displayedItems;
 };
 
+const readDataFromLocalStorage = () => {
+  const data = localStorage.getItem("starWarsData");
+  return data;
+};
+
+const saveDataToLocalStorage = (data) => {
+  localStorage.setItem("starWarsData", JSON.stringify(data));
+};
+
 const getStarWarsData = (tableRowContainer) => {
   const starWarsDataURL = "https://swapi.co/api/people/";
   let xmlhttp = new XMLHttpRequest();
@@ -138,12 +148,10 @@ const getStarWarsData = (tableRowContainer) => {
       if (xmlhttp.readyState == XMLHttpRequest.DONE) {
          if (xmlhttp.status == 200) {
            const completeStarWarsData = JSON.parse(xmlhttp.responseText);
-           // Temporarily use global Star Wars data global variable
-           // used when calling sort function. Should figure out
-           // way to avoid global Star wars variable
+           // Use global Star Wars data variable for sort function
            starWarsDataG = completeStarWarsData.results;
-
            const starWarsData = completeStarWarsData.results;
+           saveDataToLocalStorage(starWarsData);
            const currentPage = 1;
            const itemsPerPageToDisplay = getItemsDisplayPerPage(starWarsData, currentPage);
 

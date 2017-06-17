@@ -72,6 +72,9 @@ const createPagination = (starWarsData) => {
   previous.setAttribute("class", "pagination-nav prev");
   previous.innerText = "Prev";
   previous.addEventListener("click", () => {
+    if (currentPage === 1) {
+      return;
+    }
     currentPage--;
     const itemsPerPageToDisplay = getItemsDisplayPerPage(starWarsData, currentPage);
     deleteRows(tableRowContainer);
@@ -82,6 +85,9 @@ const createPagination = (starWarsData) => {
   next.setAttribute("class", "pagination-nav next");
   next.innerText = "Next";
   next.addEventListener("click", () => {
+    if (currentPage === numberOfPages) {
+      return;
+    }
     currentPage++;
     const itemsPerPageToDisplay = getItemsDisplayPerPage(starWarsData, currentPage);
     deleteRows(tableRowContainer);

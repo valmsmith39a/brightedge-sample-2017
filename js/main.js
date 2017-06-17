@@ -6,10 +6,21 @@ let starWarsDataG;
 (function main () {
   document.addEventListener("DOMContentLoaded", () => {
     const tableRowContainer = document.getElementById("table-body");
+    const contentWrapper = document.getElementById("content-wrapper");
     let starWarsData = {};
     getStarWarsData(tableRowContainer);
 
-    document.getElementById("name-header").addEventListener("click", () => {
+    // Show/Hide
+    document.getElementById("show-hide").addEventListener("click", () => {
+      if (contentWrapper.style.display === "none") {
+        contentWrapper.style.display = "block";
+      } else {
+        contentWrapper.style.display = "none";
+      }
+    });
+
+    // Sort button
+    document.getElementById("sort-btn").addEventListener("click", () => {
       const sortedStarWarsData = sortNames(starWarsDataG);
       const CURRENT_PAGE = 1;
       const itemsPerPageToDisplay = getItemsDisplayPerPage(sortedStarWarsData, CURRENT_PAGE);

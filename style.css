@@ -1,3 +1,9 @@
+#show-hide, #sort-btn {
+  color: white;
+  background-color: #26D6CB;
+  margin-bottom: 20px;
+}
+
 .pagination-nav {
   margin: 0 3px 0 3px;
 }
@@ -11,7 +17,7 @@
 }
 
 .pagination {
-  margin: 20px 0 0 29px;
+  margin: 20px 0 0 18px;
 }
 
 a.active {

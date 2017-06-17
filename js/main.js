@@ -65,6 +65,7 @@ const createNameHeightTable = (starWarsDataArr, tableRowContainer) => {
     let tableDataName = document.createTextNode(starWarsName);
     tableCellName.setAttribute("class", "name-data");
     tableCellName.setAttribute("value", starWarsDataArr[i].name);
+    tableCellName.setAttribute("name", starWarsDataArr[i].name);
     tableCellName.appendChild(tableDataName);
     tableRow.appendChild(tableCellName);
 
@@ -77,7 +78,7 @@ const createNameHeightTable = (starWarsDataArr, tableRowContainer) => {
     let editButton = document.createElement("BUTTON");
     editButton.innerText = "Save Edits";
     editButton.addEventListener("click", () => {
-      saveEditName(tableRow.rowIndex - 1, tableCellName.value);
+      saveEditName(tableCellName.value, tableCellName.name);
     });
     tableRow.appendChild(editButton);
 
@@ -85,10 +86,20 @@ const createNameHeightTable = (starWarsDataArr, tableRowContainer) => {
   }
 };
 
-const saveEditName = (index, newName) => {
+const getEditedItemIndex = (starWarsData, origName) => {
+  for (let i = 0; i < starWarsData.length; i++) {
+    if (starWarsData[i].name === origName) {
+      return i;
+    }
+  }
+};
+
+const saveEditName = (newName, origName) => {
   const tableRowContainer = document.getElementById("table-body");
   let starWarsData = readDataFromLocalStorage();
-  starWarsData[index].name = newName;
+  let editedItemIndex = getEditedItemIndex(starWarsData, origName);
+
+  starWarsData[editedItemIndex].name = newName;
   saveDataToLocalStorage(starWarsData);
   starWarsDataG = starWarsData.slice(0);
 };
@@ -141,9 +152,6 @@ const renderPaginationPageNumbers = (pagination, numberOfPages) => {
     let page = document.createElement("a");
     page.setAttribute("class", "pagination-nav page")
     page.innerText = i + 1;
-    page.addEventListener("click", () => {
-      page.setAttribute("class", "active");
-    });
     pagination.appendChild(page);
   }
 };

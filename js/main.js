@@ -8,7 +8,17 @@ let starWarsDataG;
     const tableRowContainer = document.getElementById("table-body");
     const contentWrapper = document.getElementById("content-wrapper");
     let starWarsData = {};
-    getStarWarsData(tableRowContainer);
+
+    if (readDataFromLocalStorage()) {
+      starWarsDataG = readDataFromLocalStorage();
+      const CURRENT_PAGE = 1;
+      const itemsPerPageToDisplay = getItemsDisplayPerPage(starWarsDataG, CURRENT_PAGE);
+      deleteRows(tableRowContainer);
+      createNameHeightTable(itemsPerPageToDisplay, tableRowContainer);
+      createPagination(starWarsDataG);
+    } else {
+      getStarWarsData(tableRowContainer);
+    }
 
     // Show/Hide
     document.getElementById("show-hide").addEventListener("click", () => {
@@ -21,7 +31,6 @@ let starWarsDataG;
 
     // Sort button
     document.getElementById("sort-btn").addEventListener("click", () => {
-      console.log("data from sort is: ", readDataFromLocalStorage());
       const sortedStarWarsData = sortNames(starWarsDataG);
       const CURRENT_PAGE = 1;
       const itemsPerPageToDisplay = getItemsDisplayPerPage(sortedStarWarsData, CURRENT_PAGE);
@@ -52,9 +61,10 @@ const createNameHeightTable = (starWarsDataArr, tableRowContainer) => {
     const starWarsName = starWarsDataArr[i].name;
     const starWarsHeight = starWarsDataArr[i].height;
 
-    let tableCellName = document.createElement("TD");
+    let tableCellName = document.createElement("INPUT");
     let tableDataName = document.createTextNode(starWarsName);
     tableCellName.setAttribute("class", "name-data");
+    tableCellName.setAttribute("value", starWarsDataArr[i].name);
     tableCellName.appendChild(tableDataName);
     tableRow.appendChild(tableCellName);
 
@@ -64,8 +74,23 @@ const createNameHeightTable = (starWarsDataArr, tableRowContainer) => {
     tableCellHeight.appendChild(tableDataHeight);
     tableRow.appendChild(tableCellHeight);
 
+    let editButton = document.createElement("BUTTON");
+    editButton.innerText = "Save Edits";
+    editButton.addEventListener("click", () => {
+      saveEditName(tableRow.rowIndex - 1, tableCellName.value);
+    });
+    tableRow.appendChild(editButton);
+
     tableRowContainer.appendChild(tableRow);
   }
+};
+
+const saveEditName = (index, newName) => {
+  const tableRowContainer = document.getElementById("table-body");
+  let starWarsData = readDataFromLocalStorage();
+  starWarsData[index].name = newName;
+  saveDataToLocalStorage(starWarsData);
+  starWarsDataG = starWarsData.slice(0);
 };
 
 const deleteRows = (tableRowContainer) => {
@@ -133,6 +158,9 @@ const getItemsDisplayPerPage = (starWarsData, currentPage) => {
 
 const readDataFromLocalStorage = () => {
   const data = localStorage.getItem("starWarsData");
+  if (data) {
+    return JSON.parse(data);
+  }
   return data;
 };
 
@@ -148,16 +176,15 @@ const getStarWarsData = (tableRowContainer) => {
       if (xmlhttp.readyState == XMLHttpRequest.DONE) {
          if (xmlhttp.status == 200) {
            const completeStarWarsData = JSON.parse(xmlhttp.responseText);
-           // Use global Star Wars data variable for sort function
-           starWarsDataG = completeStarWarsData.results;
            const starWarsData = completeStarWarsData.results;
            saveDataToLocalStorage(starWarsData);
+           // Use global Star Wars data variable for sort function
+           starWarsDataG = completeStarWarsData.results;
            const currentPage = 1;
            const itemsPerPageToDisplay = getItemsDisplayPerPage(starWarsData, currentPage);
-
+           deleteRows(tableRowContainer);
            createNameHeightTable(itemsPerPageToDisplay, tableRowContainer);
            createPagination(starWarsData);
-
            return starWarsData;
          } else if (xmlhttp.status == 400) {
           alert('There was an error 400');

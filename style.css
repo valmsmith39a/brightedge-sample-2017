@@ -12,6 +12,9 @@
   color: #687175;
 }
 
+.name-data {
+  border: none; 
+}
 .height-data {
   padding-left: 13px;
 }

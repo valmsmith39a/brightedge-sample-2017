@@ -2,6 +2,12 @@
 
 ### Hosted here: https://valmsmith39a.github.io/brightedge-sample-2017/
 
+### To run locally:
+- git clone https://github.com/valmsmith39a/brightedge-sample-2017.git
+- Command line in terminal: `python -m SimpleHTTPServer 3000`
+- Open browser to http://localhost:3000/
+- To exit server, hit `Control-C` two times
+
 ### To Test:
 - When user first loads the page, table displays Star Wars characters' names and heights.
 - User can Show/Hide table.

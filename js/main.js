@@ -1,10 +1,9 @@
 "use strict";
 
-main();
-
+const ITEMS_PER_PAGE = 2;
 let starWarsDataG;
 
-function main () {
+(function main () {
   document.addEventListener("DOMContentLoaded", () => {
     const tableRowContainer = document.getElementById("table-body");
     let starWarsData = {};
@@ -16,7 +15,7 @@ function main () {
       createNameHeightTable(sortedStarWarsData, tableRowContainer);
     });
   });
-}
+})();
 
 const sortNames = (starWarsData) => {
   // To avoid mutating initial array
@@ -35,7 +34,7 @@ const sortNames = (starWarsData) => {
 };
 
 const createNameHeightTable = (starWarsDataArr, tableRowContainer) => {
-  for (let i = 0; i < starWarsDataArr.length / 2; i++) {
+  for (let i = 0; i < starWarsDataArr.length; i++) {
     let tableRow = document.createElement("TR");
     tableRow.setAttribute("class", "row-body");
     const starWarsName = starWarsDataArr[i].name;
@@ -43,14 +42,16 @@ const createNameHeightTable = (starWarsDataArr, tableRowContainer) => {
 
     let tableCellName = document.createElement("TD");
     let tableDataName = document.createTextNode(starWarsName);
+    tableCellName.setAttribute("class", "name-data");
     tableCellName.appendChild(tableDataName);
     tableRow.appendChild(tableCellName);
 
     let tableCellHeight = document.createElement("TD");
     let tableDataHeight = document.createTextNode(starWarsHeight);
-
+    tableCellHeight.setAttribute("class", "height-data");
     tableCellHeight.appendChild(tableDataHeight);
     tableRow.appendChild(tableCellHeight);
+
     tableRowContainer.appendChild(tableRow);
   }
 };
@@ -62,22 +63,29 @@ const deleteRows = (tableRowContainer) => {
 };
 
 const createPagination = (starWarsData) => {
-  let paginaton = document.getElementById("pagination");
-  const ITEMS_PER_PAGE = 5;
   const numberOfPages = starWarsData.length / ITEMS_PER_PAGE;
+  const tableRowContainer = document.getElementById("table-body");
+  let paginaton = document.getElementById("pagination");
+  let currentPage = 1;
 
   const previous = document.createElement("a");
   previous.setAttribute("class", "pagination-nav prev");
   previous.innerText = "Prev";
   previous.addEventListener("click", () => {
-    console.log("clicked on previous!");
+    currentPage--;
+    const itemsPerPageToDisplay = getItemsDisplayPerPage(starWarsData, currentPage);
+    deleteRows(tableRowContainer);
+    createNameHeightTable(itemsPerPageToDisplay, tableRowContainer);
   });
 
   const next = document.createElement("a");
   next.setAttribute("class", "pagination-nav next");
   next.innerText = "Next";
   next.addEventListener("click", () => {
-    console.log("clicked on next!");
+    currentPage++;
+    const itemsPerPageToDisplay = getItemsDisplayPerPage(starWarsData, currentPage);
+    deleteRows(tableRowContainer);
+    createNameHeightTable(itemsPerPageToDisplay, tableRowContainer);
   });
 
   pagination.appendChild(previous);
@@ -87,11 +95,19 @@ const createPagination = (starWarsData) => {
     page.setAttribute("class", "pagination-nav page")
     page.innerText = i + 1;
     page.addEventListener("click", () => {
-      console.log("clicked page!");
+      page.setAttribute("class", "active");
     });
     pagination.appendChild(page);
   }
   pagination.appendChild(next);
+};
+
+const getItemsDisplayPerPage = (starWarsData, currentPage) => {
+  const beginIndex = (currentPage - 1) * ITEMS_PER_PAGE;
+  const endIndex = beginIndex + ITEMS_PER_PAGE;
+  const displayedItems = starWarsData.slice(beginIndex, endIndex);
+
+  return displayedItems;
 };
 
 const getStarWarsData = (tableRowContainer) => {
@@ -108,8 +124,12 @@ const getStarWarsData = (tableRowContainer) => {
            starWarsDataG = completeStarWarsData.results;
 
            const starWarsData = completeStarWarsData.results;
-           createNameHeightTable(starWarsData, tableRowContainer);
+           const currentPage = 1;
+           const itemsPerPageToDisplay = getItemsDisplayPerPage(starWarsData, currentPage);
+
+           createNameHeightTable(itemsPerPageToDisplay, tableRowContainer);
            createPagination(starWarsData);
+
            return starWarsData;
          } else if (xmlhttp.status == 400) {
           alert('There was an error 400');

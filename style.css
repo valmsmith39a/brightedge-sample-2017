@@ -5,3 +5,15 @@
 #name-header, #height-header  {
   color: #687175;
 }
+
+.height-data {
+  padding-left: 13px;
+}
+
+.pagination {
+  margin: 20px 0 0 29px;
+}
+
+a.active {
+  background-color: red;
+}
